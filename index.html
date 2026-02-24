@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Allianz Валутен Калкулатор</title>
+
+<style>
+    body {
+        margin: 0;
+        font-family: "Segoe UI", sans-serif;
+        background: #1e1e1e;
+        color: white;
+    }
+
+    .header {
+        background: #0d47a1;
+        padding: 15px;
+        text-align: center;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .container {
+        padding: 20px;
+        max-width: 400px;
+        margin: auto;
+    }
+
+    input, select, button {
+        width: 100%;
+        padding: 12px;
+        margin-top: 10px;
+        border-radius: 8px;
+        border: none;
+        font-size: 16px;
+    }
+
+    input, select {
+        background: #2a2a2a;
+        color: white;
+    }
+
+    button {
+        background: #0d47a1;
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background: #1565c0;
+    }
+
+    .result {
+        margin-top: 20px;
+        font-size: 22px;
+        text-align: center;
+        font-weight: bold;
+    }
+
+    .status {
+        margin-top: 10px;
+        font-size: 12px;
+        text-align: center;
+        color: #aaaaaa;
+    }
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    Allianz Валутен Калкулатор
+</div>
+
+<div class="container">
+    <input type="number" id="amount" placeholder="Въведи сума">
+
+    <select id="from"></select>
+    <select id="to"></select>
+
+    <button onclick="convert()">Конвертирай</button>
+
+    <div class="result" id="result">–</div>
+    <div class="status" id="status">Зареждане на курсове...</div>
+</div>
+
+<script>
+let rates = {};
+
+async function loadRates() {
+    try {
+        const res = await fetch("https://api.exchangerate.host/latest?base=EUR");
+        const data = await res.json();
+        rates = data.rates;
+
+        const currencies = Object.keys(rates).sort();
+
+        const from = document.getElementById("from");
+        const to = document.getElementById("to");
+
+        currencies.forEach(cur => {
+            from.innerHTML += `<option>${cur}</option>`;
+            to.innerHTML += `<option>${cur}</option>`;
+        });
+
+        from.value = "EUR";
+        to.value = "USD";
+
+        document.getElementById("status").innerText = "Live курсове активни";
+    } catch {
+        document.getElementById("status").innerText = "Няма връзка с exchange API";
+    }
+}
+
+function convert() {
+    const amount = parseFloat(document.getElementById("amount").value);
+    const from = document.getElementById("from").value;
+    const to = document.getElementById("to").value;
+
+    if (!amount || !rates[from]) {
+        document.getElementById("result").innerText = "Невалидна сума";
+        return;
+    }
+
+    const eur = amount / rates[from];
+    const converted = eur * rates[to];
+
+    document.getElementById("result").innerText =
+        converted.toFixed(2) + " " + to;
+}
+
+loadRates();
+</script>
+
+</body>
+</html>
