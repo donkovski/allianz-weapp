@@ -2,14 +2,14 @@
 <html lang="bg">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Валутен Калкулатор</title>
 
 <style>
 
 body{
 font-family: Arial;
-background:#f5f7fb;
+background:#f2f4f8;
 display:flex;
 justify-content:center;
 margin-top:40px;
@@ -18,26 +18,25 @@ margin-top:40px;
 .container{
 background:white;
 padding:25px;
-width:320px;
-border-radius:10px;
-box-shadow:0px 5px 20px rgba(0,0,0,0.1);
+width:330px;
+border-radius:12px;
+box-shadow:0px 6px 20px rgba(0,0,0,0.1);
 }
 
 h2{
 text-align:center;
-margin-bottom:20px;
-color:#003366;
+color:#002f6c;
 }
 
 .display{
 width:100%;
 height:50px;
-font-size:22px;
+font-size:24px;
 text-align:right;
 padding:10px;
-border:1px solid #ccc;
 border-radius:6px;
-margin-bottom:15px;
+border:1px solid #ccc;
+margin-bottom:10px;
 }
 
 select{
@@ -45,50 +44,52 @@ width:100%;
 padding:10px;
 margin-bottom:10px;
 border-radius:6px;
-border:1px solid #ccc;
 font-size:16px;
-}
-
-.result{
-margin-top:10px;
-font-size:20px;
-text-align:center;
-color:#003366;
-font-weight:bold;
 }
 
 .buttons{
 display:grid;
 grid-template-columns:repeat(4,1fr);
-gap:8px;
-margin-top:15px;
+gap:6px;
+margin-top:10px;
 }
 
 button{
-padding:15px;
+padding:14px;
 font-size:18px;
 border:none;
 border-radius:6px;
-background:#e6ecf5;
+background:#e3eaf5;
 cursor:pointer;
 }
 
 button:hover{
-background:#ccd6e6;
+background:#cfdaf0;
 }
 
 .convert{
-margin-top:10px;
 width:100%;
 padding:12px;
-font-size:18px;
-background:#003366;
+margin-top:10px;
+background:#002f6c;
 color:white;
+font-size:18px;
 border-radius:6px;
 }
 
-.convert:hover{
-background:#0055aa;
+.result{
+text-align:center;
+margin-top:10px;
+font-size:20px;
+font-weight:bold;
+color:#002f6c;
+}
+
+.status{
+text-align:center;
+font-size:12px;
+color:gray;
+margin-bottom:5px;
 }
 
 </style>
@@ -100,34 +101,42 @@ background:#0055aa;
 
 <h2>Валутен Калкулатор</h2>
 
-<input class="display" id="amount" value="0">
+<div class="status" id="status">
+Зареждане на валути...
+</div>
+
+<input id="amount" class="display" value="0">
 
 <select id="from"></select>
 
 <select id="to"></select>
 
-<button class="convert" onclick="convert()">Конвертирай</button>
+<button class="convert" onclick="convert()">
+Конвертирай
+</button>
 
-<div class="result" id="result">0</div>
+<div id="result" class="result">
+0
+</div>
 
 <div class="buttons">
 
-<button onclick="addNumber(7)">7</button>
-<button onclick="addNumber(8)">8</button>
-<button onclick="addNumber(9)">9</button>
+<button onclick="num(7)">7</button>
+<button onclick="num(8)">8</button>
+<button onclick="num(9)">9</button>
 <button onclick="clearDisplay()">C</button>
 
-<button onclick="addNumber(4)">4</button>
-<button onclick="addNumber(5)">5</button>
-<button onclick="addNumber(6)">6</button>
-<button onclick="addDot()">.</button>
+<button onclick="num(4)">4</button>
+<button onclick="num(5)">5</button>
+<button onclick="num(6)">6</button>
+<button onclick="dot()">.</button>
 
-<button onclick="addNumber(1)">1</button>
-<button onclick="addNumber(2)">2</button>
-<button onclick="addNumber(3)">3</button>
-<button onclick="backspace()">←</button>
+<button onclick="num(1)">1</button>
+<button onclick="num(2)">2</button>
+<button onclick="num(3)">3</button>
+<button onclick="back()">←</button>
 
-<button onclick="addNumber(0)">0</button>
+<button onclick="num(0)">0</button>
 
 </div>
 
@@ -137,71 +146,82 @@ background:#0055aa;
 
 let rates={}
 
-async function loadCurrencies(){
+async function load(){
 
-let res = await fetch("https://api.exchangerate-api.com/v4/latest/EUR")
+try{
 
-let data = await res.json()
+let res=await fetch("https://open.er-api.com/v6/latest/EUR")
+
+let data=await res.json()
 
 rates=data.rates
 
 let from=document.getElementById("from")
 let to=document.getElementById("to")
 
-for(let currency in rates){
+for(let c in rates){
 
-let option1=document.createElement("option")
-option1.value=currency
-option1.text=currency
-from.appendChild(option1)
+let o1=document.createElement("option")
+o1.value=c
+o1.text=c
+from.appendChild(o1)
 
-let option2=document.createElement("option")
-option2.value=currency
-option2.text=currency
-to.appendChild(option2)
+let o2=document.createElement("option")
+o2.value=c
+o2.text=c
+to.appendChild(o2)
 
 }
 
 from.value="EUR"
 to.value="USD"
 
+document.getElementById("status").innerHTML="Live курсове заредени ✓"
+
+}catch(e){
+
+document.getElementById("status").innerHTML="❌ Няма връзка с API"
+
 }
 
-loadCurrencies()
+}
 
+load()
 
-function addNumber(num){
+function num(n){
 
-let display=document.getElementById("amount")
+let a=document.getElementById("amount")
 
-if(display.value=="0")
-display.value=num
+if(a.value=="0")
+a.value=n
 else
-display.value+=num
+a.value+=n
 
 }
 
-function addDot(){
+function dot(){
 
-let display=document.getElementById("amount")
+let a=document.getElementById("amount")
 
-if(!display.value.includes("."))
-display.value+="."
+if(!a.value.includes("."))
+a.value+="."
 
 }
 
 function clearDisplay(){
+
 document.getElementById("amount").value="0"
+
 }
 
-function backspace(){
+function back(){
 
-let display=document.getElementById("amount")
+let a=document.getElementById("amount")
 
-display.value=display.value.slice(0,-1)
+a.value=a.value.slice(0,-1)
 
-if(display.value=="")
-display.value="0"
+if(a.value=="")
+a.value="0"
 
 }
 
@@ -210,12 +230,13 @@ function convert(){
 let amount=parseFloat(document.getElementById("amount").value)
 
 let from=document.getElementById("from").value
+
 let to=document.getElementById("to").value
 
 let result=(amount/rates[from])*rates[to]
 
 document.getElementById("result").innerHTML=
-amount+" "+from+" = "+result.toFixed(2)+" "+to
+result.toFixed(2)+" "+to
 
 }
 
