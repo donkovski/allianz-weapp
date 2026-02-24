@@ -3,75 +3,72 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Allianz Валутен Калкулатор</title>
-
 <style>
-    body {
-        margin: 0;
-        font-family: "Segoe UI", sans-serif;
-        background: #1e1e1e;
-        color: white;
-    }
-
-    .header {
-        background: #0d47a1;
-        padding: 15px;
-        text-align: center;
-        font-size: 18px;
-        font-weight: bold;
-    }
-
-    .container {
-        padding: 20px;
-        max-width: 400px;
-        margin: auto;
-    }
-
-    input, select, button {
-        width: 100%;
-        padding: 12px;
-        margin-top: 10px;
-        border-radius: 8px;
-        border: none;
-        font-size: 16px;
-    }
-
-    input, select {
-        background: #2a2a2a;
-        color: white;
-    }
-
-    button {
-        background: #0d47a1;
-        color: white;
-        font-weight: bold;
-        cursor: pointer;
-    }
-
-    button:hover {
-        background: #1565c0;
-    }
-
-    .result {
-        margin-top: 20px;
-        font-size: 22px;
-        text-align: center;
-        font-weight: bold;
-    }
-
-    .status {
-        margin-top: 10px;
-        font-size: 12px;
-        text-align: center;
-        color: #aaaaaa;
-    }
+body {
+    margin: 0;
+    font-family: "Segoe UI", sans-serif;
+    background: #1e1e1e;
+    color: white;
+}
+.header {
+    background: #0d47a1;
+    padding: 15px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.header img {
+    height: 40px;
+    margin-right: 10px;
+}
+.container {
+    padding: 20px;
+    max-width: 400px;
+    margin: auto;
+}
+input, select, button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    border-radius: 8px;
+    border: none;
+    font-size: 16px;
+}
+input, select {
+    background: #2a2a2a;
+    color: white;
+}
+button {
+    background: #0d47a1;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+button:hover {
+    background: #1565c0;
+}
+.result {
+    margin-top: 20px;
+    font-size: 22px;
+    text-align: center;
+    font-weight: bold;
+}
+.status {
+    margin-top: 10px;
+    font-size: 12px;
+    text-align: center;
+    color: #aaaaaa;
+}
 </style>
 </head>
-
 <body>
 
 <div class="header">
+    <img src="allianz_logo.png" alt="Allianz лого">
     Allianz Валутен Калкулатор
 </div>
 
@@ -88,31 +85,47 @@
 </div>
 
 <script>
-let rates = {};
+// Фиксирани валутни курсове като fallback
+let fallbackRates = {
+    "EUR": 1,
+    "USD": 1.08,
+    "GBP": 0.8734,
+    "BGN": 1.95583
+};
+let rates = {...fallbackRates};
 
+// Зареждане на live курсове
 async function loadRates() {
     try {
-        const res = await fetch("https://api.exchangerate.host/latest");
+        const res = await fetch("https://api.frankfurter.app/latest");
         const data = await res.json();
         rates = data.rates;
+        rates["EUR"] = 1; // Базова валута
 
-        const currencies = Object.keys(rates).sort();
-
-        const from = document.getElementById("from");
-        const to = document.getElementById("to");
-
-        currencies.forEach(cur => {
-            from.innerHTML += `<option>${cur}</option>`;
-            to.innerHTML += `<option>${cur}</option>`;
-        });
-
-        from.value = "EUR";
-        to.value = "USD";
-
+        populateDropdowns();
         document.getElementById("status").innerText = "Live курсове активни";
-    } catch {
-        document.getElementById("status").innerText = "Няма връзка с exchange API";
+    } catch (e) {
+        console.log("API не е достъпен, използват се фиксирани курсове");
+        populateDropdowns();
+        document.getElementById("status").innerText = "Няма връзка с API – използват се фиксирани курсове";
     }
+}
+
+function populateDropdowns() {
+    const currencies = Object.keys(rates).sort();
+    const from = document.getElementById("from");
+    const to = document.getElementById("to");
+
+    from.innerHTML = "";
+    to.innerHTML = "";
+
+    currencies.forEach(cur => {
+        from.innerHTML += `<option>${cur}</option>`;
+        to.innerHTML += `<option>${cur}</option>`;
+    });
+
+    from.value = "EUR";
+    to.value = "USD";
 }
 
 function convert() {
@@ -127,11 +140,10 @@ function convert() {
 
     const eur = amount / rates[from];
     const converted = eur * rates[to];
-
-    document.getElementById("result").innerText =
-        converted.toFixed(2) + " " + to;
+    document.getElementById("result").innerText = converted.toFixed(2) + " " + to;
 }
 
+// Инициализация
 loadRates();
 </script>
 
