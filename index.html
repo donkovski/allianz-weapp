@@ -3,93 +3,138 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Валутен Калкулатор</title>
+<title>Allianz Валутен Калкулатор</title>
 
 <style>
 
 body{
-font-family: Arial;
-background:#f2f4f8;
+font-family: Arial, sans-serif;
+background:#eef3fb;
 display:flex;
 justify-content:center;
-margin-top:40px;
+margin-top:30px;
 }
 
+/* Allianz стил */
 .container{
+
+width:350px;
 background:white;
-padding:25px;
-width:330px;
-border-radius:12px;
-box-shadow:0px 6px 20px rgba(0,0,0,0.1);
+border-radius:14px;
+box-shadow:0px 6px 25px rgba(0,0,0,0.15);
+overflow:hidden;
+
 }
 
-h2{
+.header{
+
+background:#003781;
+color:white;
+padding:15px;
+font-size:20px;
 text-align:center;
-color:#002f6c;
+font-weight:bold;
+
+}
+
+.content{
+
+padding:20px;
+
 }
 
 .display{
+
 width:100%;
-height:50px;
-font-size:24px;
+height:55px;
+font-size:26px;
 text-align:right;
 padding:10px;
-border-radius:6px;
+border-radius:8px;
 border:1px solid #ccc;
 margin-bottom:10px;
+
 }
 
 select{
+
 width:100%;
-padding:10px;
+padding:12px;
 margin-bottom:10px;
-border-radius:6px;
+border-radius:8px;
+border:1px solid #ccc;
 font-size:16px;
-}
 
-.buttons{
-display:grid;
-grid-template-columns:repeat(4,1fr);
-gap:6px;
-margin-top:10px;
-}
-
-button{
-padding:14px;
-font-size:18px;
-border:none;
-border-radius:6px;
-background:#e3eaf5;
-cursor:pointer;
-}
-
-button:hover{
-background:#cfdaf0;
 }
 
 .convert{
+
 width:100%;
-padding:12px;
-margin-top:10px;
-background:#002f6c;
+padding:14px;
+background:#003781;
 color:white;
 font-size:18px;
-border-radius:6px;
+border:none;
+border-radius:8px;
+margin-top:5px;
+
 }
 
 .result{
+
+margin-top:12px;
 text-align:center;
-margin-top:10px;
-font-size:20px;
+font-size:22px;
 font-weight:bold;
-color:#002f6c;
+color:#003781;
+
+}
+
+/* Калкулатор бутони */
+
+.buttons{
+
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:8px;
+margin-top:15px;
+
+}
+
+button{
+
+padding:16px;
+font-size:18px;
+border:none;
+border-radius:8px;
+background:#dde6f7;
+cursor:pointer;
+
+}
+
+button:hover{
+
+background:#c7d6f5;
+
 }
 
 .status{
+
 text-align:center;
 font-size:12px;
 color:gray;
 margin-bottom:5px;
+
+}
+
+.footer{
+
+background:#003781;
+color:white;
+text-align:center;
+padding:6px;
+font-size:12px;
+
 }
 
 </style>
@@ -99,10 +144,14 @@ margin-bottom:5px;
 
 <div class="container">
 
-<h2>Валутен Калкулатор</h2>
+<div class="header">
+ALLIANZ Валутен Калкулатор
+</div>
+
+<div class="content">
 
 <div class="status" id="status">
-Зареждане на валути...
+Зареждане на курсове...
 </div>
 
 <input id="amount" class="display" value="0">
@@ -142,6 +191,12 @@ margin-bottom:5px;
 
 </div>
 
+<div class="footer">
+Live Exchange Rates
+</div>
+
+</div>
+
 <script>
 
 let rates={}
@@ -174,9 +229,9 @@ to.appendChild(o2)
 }
 
 from.value="EUR"
-to.value="USD"
+to.value="ALL"
 
-document.getElementById("status").innerHTML="Live курсове заредени ✓"
+document.getElementById("status").innerHTML="✓ Allianz Live курсове"
 
 }catch(e){
 
@@ -187,6 +242,7 @@ document.getElementById("status").innerHTML="❌ Няма връзка с API"
 }
 
 load()
+
 
 function num(n){
 
@@ -230,7 +286,6 @@ function convert(){
 let amount=parseFloat(document.getElementById("amount").value)
 
 let from=document.getElementById("from").value
-
 let to=document.getElementById("to").value
 
 let result=(amount/rates[from])*rates[to]
