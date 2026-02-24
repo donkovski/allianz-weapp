@@ -3,39 +3,56 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Allianz Валутен Калкулатор</title>
+<title>Валутен калкулатор на Алианц</title>
 
 <style>
 
 body{
-font-family: Arial, sans-serif;
-background:#eef3fb;
+font-family: Arial;
+background:#0f1724;
 display:flex;
 justify-content:center;
-margin-top:30px;
+margin-top:40px;
+color:white;
 }
 
-/* Allianz стил */
+/* Основен контейнер */
+
 .container{
 
-width:350px;
-background:white;
+width:360px;
+background:#1b2435;
 border-radius:14px;
-box-shadow:0px 6px 25px rgba(0,0,0,0.15);
+box-shadow:0px 10px 30px rgba(0,0,0,0.6);
 overflow:hidden;
 
 }
 
+/* Header */
+
 .header{
 
 background:#003781;
-color:white;
 padding:15px;
-font-size:20px;
 text-align:center;
+
+}
+
+.logo{
+
+width:120px;
+margin-bottom:5px;
+
+}
+
+.title{
+
+font-size:18px;
 font-weight:bold;
 
 }
+
+/* Content */
 
 .content{
 
@@ -51,7 +68,9 @@ font-size:26px;
 text-align:right;
 padding:10px;
 border-radius:8px;
-border:1px solid #ccc;
+border:none;
+background:#0f1724;
+color:white;
 margin-bottom:10px;
 
 }
@@ -62,7 +81,9 @@ width:100%;
 padding:12px;
 margin-bottom:10px;
 border-radius:8px;
-border:1px solid #ccc;
+border:none;
+background:#0f1724;
+color:white;
 font-size:16px;
 
 }
@@ -76,7 +97,6 @@ color:white;
 font-size:18px;
 border:none;
 border-radius:8px;
-margin-top:5px;
 
 }
 
@@ -86,11 +106,11 @@ margin-top:12px;
 text-align:center;
 font-size:22px;
 font-weight:bold;
-color:#003781;
+color:#4da3ff;
 
 }
 
-/* Калкулатор бутони */
+/* Калкулатор */
 
 .buttons{
 
@@ -107,14 +127,15 @@ padding:16px;
 font-size:18px;
 border:none;
 border-radius:8px;
-background:#dde6f7;
+background:#2a3650;
+color:white;
 cursor:pointer;
 
 }
 
 button:hover{
 
-background:#c7d6f5;
+background:#3a4a70;
 
 }
 
@@ -122,18 +143,17 @@ background:#c7d6f5;
 
 text-align:center;
 font-size:12px;
-color:gray;
+color:#aaa;
 margin-bottom:5px;
 
 }
 
 .footer{
 
-background:#003781;
-color:white;
 text-align:center;
-padding:6px;
+padding:8px;
 font-size:12px;
+color:#888;
 
 }
 
@@ -145,13 +165,20 @@ font-size:12px;
 <div class="container">
 
 <div class="header">
-ALLIANZ Валутен Калкулатор
+
+<img class="logo"
+src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Allianz_logo.svg/512px-Allianz_logo.svg.png">
+
+<div class="title">
+Валутен калкулатор на Алианц
+</div>
+
 </div>
 
 <div class="content">
 
 <div class="status" id="status">
-Зареждане на курсове...
+Зареждане на live курсове...
 </div>
 
 <input id="amount" class="display" value="0">
@@ -192,7 +219,7 @@ ALLIANZ Валутен Калкулатор
 </div>
 
 <div class="footer">
-Live Exchange Rates
+Allianz Exchange System
 </div>
 
 </div>
@@ -231,7 +258,7 @@ to.appendChild(o2)
 from.value="EUR"
 to.value="ALL"
 
-document.getElementById("status").innerHTML="✓ Allianz Live курсове"
+document.getElementById("status").innerHTML="✓ Live курсове заредени"
 
 }catch(e){
 
